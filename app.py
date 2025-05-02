@@ -11,8 +11,8 @@ import json
 import game
 
 app = Flask(__name__)
+socketio = SocketIO(app, async_mode="gevent", cors_allowed_origins=[]) # wrap socketio installation into new name - maybe makes a connection to our app too?
 CORS(app)
-socketio = SocketIO(app, cors_allowed_origins=[]) # wrap socketio installation into new name - maybe makes a connection to our app too?
 
     # maybe use sessions - which requires a secret key
 
@@ -196,10 +196,14 @@ def get_stat(statName):
 # socket for checking if a room is full
 @socketio.on('exists')
 def handleExists(lobbyNumber):
+    print("received an exists message")
     if(lobbiesData[lobbyNumber]["usersConnected"] < 2):
         emit('exists', (lobbyNumber, 1)) # send a message back with true in the exists slot
+        print("emitted an exists back")
     else:
         emit('exists', (lobbyNumber, 0)) # send a message back with false in the exists slot
+        print("emitted an exists back")
+
 
 
 # socket for managing response to clients connecting to the socket
@@ -220,6 +224,7 @@ def handleDisconnect():
 
             # kick out both players
             emit("closeRoom", to=roomName, broadcast=True)
+            print("closed a room")
 
             # reset the attributes for the lobby
             createLobby(roomName)
@@ -285,6 +290,7 @@ def createGame(lobbyName):
     Initialize a game in a lobby. This is the moment where stats recognize a game as "starting"
     """
     emit('fullLobby', to=lobbyName, broadcast=True)
+    print("emitted a full lobby while creating a game")
 
     db_manager.increment("gamesStarted")
 

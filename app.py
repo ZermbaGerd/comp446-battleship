@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from random import random
 from flask import Flask, jsonify, render_template, request
+from flask_cors import CORS
 from flask_socketio import SocketIO, close_room, emit, join_room, rooms, leave_room
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Integer, String
@@ -10,7 +11,8 @@ import json
 import game
 
 app = Flask(__name__)
-socketio = SocketIO(app) # wrap socketio installation into new name - maybe makes a connection to our app too?
+CORS(app)
+socketio = SocketIO(app, cors_allowed_origins=[]) # wrap socketio installation into new name - maybe makes a connection to our app too?
 
     # maybe use sessions - which requires a secret key
 
@@ -19,10 +21,6 @@ socketio = SocketIO(app) # wrap socketio installation into new name - maybe make
 # TODO: figure out win conditions
 # TODO: fix lobby creation
 # TODO: close lobbies on disconnects
-
-# TODO: add SQL stuff
-    # this is probably just adding stats to big moments that just add to the sqllite DB
-    # and also this is having a "stats page" linked from index that just shows those stats
 
 # TODO: make the site a lot prettier
 

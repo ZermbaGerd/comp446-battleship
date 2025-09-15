@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from random import random
 from flask import Flask, jsonify, render_template, request
-from flask_cors import CORS
 from flask_socketio import SocketIO, close_room, emit, join_room, rooms, leave_room
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Integer, String
@@ -11,8 +10,7 @@ import json
 import game
 
 app = Flask(__name__)
-socketio = SocketIO(app, async_mode="gevent", cors_allowed_origins=[]) # wrap socketio installation into new name - maybe makes a connection to our app too?
-CORS(app)
+socketio = SocketIO(app, async_mode="eventlet") # wrap socketio installation into new name - maybe makes a connection to our app too?
 
     # maybe use sessions - which requires a secret key
 
